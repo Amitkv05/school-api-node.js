@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+require("dotenv").config();
 
 const schoolRoutes = require("./routes/schoolRoutes");
 
@@ -11,6 +12,8 @@ app.use(bodyParser.json());
 
 app.use("/", schoolRoutes);
 
-app.listen(5000, () => {
-    console.log("Server running on port 5000");
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
