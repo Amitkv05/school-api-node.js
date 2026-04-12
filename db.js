@@ -13,13 +13,15 @@ const db = mysql.createPool({
     queueLimit: 0
 });
 
+console.log("Database pool created");
+
 
 db.connect((err) => {
     if (err) {
-        console.log(" FULL DB ERROR:", err);
+        console.log("DB Connection Failed:", err);
     } else {
-        console.log(" Connected to MySQL");
+        console.log("Connected to MySQL");
     }
 });
 
-module.exports = db.promise();
+module.exports = db;
