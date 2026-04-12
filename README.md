@@ -71,6 +71,15 @@ DB_NAME=your_db
 DB_PORT=3306
 PORT=1000
 
+## Database
+
+MySQL database is hosted on AlwaysData cloud platform.
+
+## Deployment
+
+- Backend hosted on Render
+- Database hosted on AlwaysData (MySQL)
+
 ## Run Project
 
 node index.js
