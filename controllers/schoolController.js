@@ -1,11 +1,10 @@
 const db = require("../db");
 
-
+// ✅ ADD SCHOOL
 exports.addSchool = (req, res) => {
     const { name, address, latitude, longitude } = req.body;
 
-    // Validation
-    if (!name || !address || !latitude || !longitude) {
+    if (!name || !address || latitude == null || longitude == null) {
         return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -13,25 +12,32 @@ exports.addSchool = (req, res) => {
 
     db.query(sql, [name, address, latitude, longitude], (err, result) => {
         if (err) {
-            return res.status(500).json(err);
+            console.error("DB ERROR:", err);
+            return res.status(500).json({ message: "Database error" });
         }
+
         res.json({ message: "School added successfully" });
     });
 };
 
 
+// ✅ DISTANCE FUNCTION (Haversine)
 function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // km
+    const R = 6371;
+
+    lat1 = parseFloat(lat1);
+    lon1 = parseFloat(lon1);
+    lat2 = parseFloat(lat2);
+    lon2 = parseFloat(lon2);
 
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
 
     const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.sin(dLat / 2) ** 2 +
         Math.cos(lat1 * Math.PI / 180) *
         Math.cos(lat2 * Math.PI / 180) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+        Math.sin(dLon / 2) ** 2;
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
@@ -39,16 +45,21 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 
+// ✅ LIST SCHOOLS
 exports.listSchools = (req, res) => {
-    const { latitude, longitude } = req.query;
+    let { latitude, longitude } = req.query;
 
-    if (!latitude || !longitude) {
+    if (latitude == null || longitude == null) {
         return res.status(400).json({ message: "Location required" });
     }
 
+    latitude = parseFloat(latitude);
+    longitude = parseFloat(longitude);
+
     db.query("SELECT * FROM schools", (err, results) => {
         if (err) {
-            return res.status(500).json(err);
+            console.error("DB ERROR:", err);
+            return res.status(500).json({ message: "Database error" });
         }
 
         const sortedSchools = results.map((school) => {
@@ -59,7 +70,7 @@ exports.listSchools = (req, res) => {
                 school.longitude
             );
 
-            return { ...school, distance };
+            return { ...school, distance: Number(distance.toFixed(2)) };
         })
             .sort((a, b) => a.distance - b.distance);
 
