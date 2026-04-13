@@ -1,6 +1,6 @@
 const db = require("../db");
 
-// ✅ ADD SCHOOL
+
 exports.addSchool = (req, res) => {
     const { name, address, latitude, longitude } = req.body;
 
@@ -20,8 +20,6 @@ exports.addSchool = (req, res) => {
     });
 };
 
-
-// ✅ DISTANCE FUNCTION (Haversine)
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371;
 
@@ -45,7 +43,6 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 
-// ✅ LIST SCHOOLS
 exports.listSchools = (req, res) => {
     let { latitude, longitude } = req.query;
 
